@@ -105,7 +105,16 @@ public class UserInterface {
         String note = sc.nextLine();
 
         try {
-            GlucoseMeasure m = userService.addMeasure(currentUser, level, note);
+            GlucoseMeasure m;
+
+            if (note.isBlank()) {
+                // chama a sobrecarga sem nota
+                m = userService.addMeasure(currentUser, level);
+            } else {
+                // chama a versão com nota
+                m = userService.addMeasure(currentUser, level, note);
+            }
+
             System.out.println("Medida registrada: " + m);
         } catch (SQLException e) {
             System.out.println("Erro ao salvar medida: " + e.getMessage());

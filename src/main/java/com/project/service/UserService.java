@@ -46,6 +46,13 @@ public class UserService {
         return m;
     }
 
+    public GlucoseMeasure addMeasure(User user, float level) throws SQLException {
+        GlucoseMeasure m = new GlucoseMeasure(level, LocalDate.now(), LocalTime.now()); // note = null
+        db.insertMeasure(user.getId(), m);
+        return m;
+    }
+
+
     public void removeMeasure(User user, int measureId) throws SQLException{
         db.deleteMeasure(user.getId(), measureId);
     }

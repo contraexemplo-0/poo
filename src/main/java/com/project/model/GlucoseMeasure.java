@@ -17,6 +17,13 @@ public class GlucoseMeasure {
         this.note = note;
     }
 
+    public GlucoseMeasure(float level, LocalDate date, LocalTime time) {
+        this.level = level;
+        this.date = date;
+        this.time = time;
+    }
+
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
