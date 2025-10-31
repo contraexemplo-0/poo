@@ -2,9 +2,9 @@ package com.project.service;
 
 import com.project.model.GlucoseMeasure;
 import com.project.model.HealthProfessional;
+import com.project.model.Historic;
 import com.project.model.Patient;
 import com.project.model.User;
-import com.project.model.Historic;
 import com.project.model.UserType;
 import com.project.persistence.DatabaseManager;
 
@@ -30,16 +30,16 @@ public class UserService {
     public User login(String name, String password) throws SQLException {
         User user = db.findUserByName(name);
         if (user != null && user.checkPassword(password)) {
-            if (user instanceof Patient) {
-                loadHistoric(user);
+            if (user instanceof Patient patient) {
+                loadHistoric(patient);
             }
             return user;
         }
         return null;
     }
 
-    public Historic loadHistoric(User user) throws SQLException {
-        List<GlucoseMeasure> measures = db.loadMeasures(user.getId());
+    public Historic loadHistoric(Patient patient) throws SQLException {
+        List<GlucoseMeasure> measures = db.loadMeasures(patient);
         return new Historic(measures);
     }
 
@@ -47,15 +47,17 @@ public class UserService {
     public GlucoseMeasure addMeasure(User user, float level, String note) throws SQLException {
         ensurePatient(user);
         if (level < 0) throw new IllegalArgumentException("Valor de glicose não pode ser negativo");
-        GlucoseMeasure m = new GlucoseMeasure(level, LocalDate.now(), LocalTime.now(), note);
-        db.insertMeasure(user.getId(), m);
+        Patient patient = (Patient) user;
+        GlucoseMeasure m = new GlucoseMeasure(patient, level, LocalDate.now(), LocalTime.now(), note);
+        db.insertMeasure(patient.getId(), m);
         return m;
     }
 
     public GlucoseMeasure addMeasure(User user, float level) throws SQLException {
         ensurePatient(user);
-        GlucoseMeasure m = new GlucoseMeasure(level, LocalDate.now(), LocalTime.now()); // note = null
-        db.insertMeasure(user.getId(), m);
+        Patient patient = (Patient) user;
+        GlucoseMeasure m = new GlucoseMeasure(patient, level, LocalDate.now(), LocalTime.now()); // note = null
+        db.insertMeasure(patient.getId(), m);
         return m;
     }
 
