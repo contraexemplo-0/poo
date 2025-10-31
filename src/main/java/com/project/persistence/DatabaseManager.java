@@ -120,14 +120,16 @@ public class DatabaseManager implements AutoCloseable {
         }
     }
 
-    public List<GlucoseMeasure> loadMeasures(int userId) throws SQLException {
+    public List<GlucoseMeasure> loadMeasures(Patient patient) throws SQLException {
         List<GlucoseMeasure> list = new ArrayList<>();
         String sql = "SELECT id, level, date, time, note FROM glucose_measures WHERE user_id=? ORDER BY date,time";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, userId);
+            ps.setInt(1, patient.getId());
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    GlucoseMeasure m = new GlucoseMeasure(rs.getFloat("level"),
+                    GlucoseMeasure m = new GlucoseMeasure(
+                            patient,
+                            rs.getFloat("level"),
                             LocalDate.parse(rs.getString("date")),
                             LocalTime.parse(rs.getString("time")),
                             rs.getString("note"));

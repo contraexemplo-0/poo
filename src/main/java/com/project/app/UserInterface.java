@@ -1,10 +1,11 @@
 package com.project.app;
 
-import com.project.model.User;
-import com.project.model.Historic;
 import com.project.model.GlucoseMeasure;
 import com.project.model.HealthProfessional;
+import com.project.model.Historic;
 import com.project.model.Patient;
+import com.project.model.RoutineEvent;
+import com.project.model.User;
 import com.project.model.UserType;
 import com.project.service.UserService;
 
@@ -189,8 +190,8 @@ public class UserInterface {
             }
 
             int index = 1;
-            for (GlucoseMeasure m : historic.getAll()) {
-                System.out.println(index + " - " + m);
+            for (RoutineEvent event : historic.getAll()) {
+                System.out.println(index + " - " + event);
                 index++;
             }
 
@@ -202,7 +203,7 @@ public class UserInterface {
                 return;
             }
 
-            GlucoseMeasure toDelete = historic.getAll().get(choice - 1);
+            RoutineEvent toDelete = historic.getAll().get(choice - 1);
 
             userService.removeMeasure(currentUser, toDelete.getId());
             System.out.println("Medida removida com sucesso!");
@@ -223,9 +224,9 @@ public class UserInterface {
             Historic historic = userService.loadHistoric(patient);
             LocalDate start = LocalDate.now().minusDays(7);
 
-            for (GlucoseMeasure m : historic.getAll()) {
-                if (!m.getDate().isBefore(start)) {
-                    System.out.println(m);
+            for (RoutineEvent event : historic.getAll()) {
+                if (!event.getDate().isBefore(start)) {
+                    System.out.println(event);
                 }
             }
         } catch (SQLException e) {
