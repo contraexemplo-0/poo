@@ -9,4 +9,9 @@ public class Patient extends User {
     public String getSummary() {
         return "Paciente " + getName() + ": acompanhe suas medições e mantenha seu tratamento em dia.";
     }
+
+    @Override
+    public String getDashboardSummary() {
+        return "Resumo do paciente " + getName() + ": registre novas medições para acompanhar tendências recentes.";
+    }
 }

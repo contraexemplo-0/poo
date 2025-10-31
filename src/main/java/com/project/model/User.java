@@ -28,4 +28,8 @@ public class User {
     public String getSummary() {
         return "Usuário: " + name + " (" + type + ")";
     }
+
+    public String getDashboardSummary() {
+        return "Bem-vindo, " + name + ".";
+    }
 }
