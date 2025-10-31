@@ -12,14 +12,26 @@ import com.project.service.UserService;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+/**
+ * Camada responsável por orquestrar a interação via terminal com o usuário
+ * final, conectando comandos com a lógica de negócios.
+ */
 public class UserInterface {
     private final UserService userService;
     private final Scanner sc = new Scanner(System.in);
 
+    /**
+     * Constrói a interface associando-a ao serviço principal da aplicação.
+     *
+     * @param userService serviço de usuários utilizado para autenticação e operações.
+     */
     public UserInterface(UserService userService) {
         this.userService = userService;
     }
 
+    /**
+     * Inicia o loop principal da aplicação em modo texto.
+     */
     public void start() {
         boolean running = true;
 
@@ -41,6 +53,9 @@ public class UserInterface {
         System.out.println("Sistema encerrado.");
     }
 
+    /**
+     * Executa o fluxo de cadastro de um novo usuário.
+     */
     private void registerUser() {
         System.out.print("Digite seu nome: ");
         String name = sc.nextLine();
@@ -57,6 +72,11 @@ public class UserInterface {
         }
     }
 
+    /**
+     * Pergunta qual tipo de usuário deve ser criado no cadastro.
+     *
+     * @return tipo de usuário selecionado.
+     */
     private UserType askUserType() {
         while (true) {
             System.out.println("Selecione o tipo de usuário:");
@@ -76,6 +96,9 @@ public class UserInterface {
         }
     }
 
+    /**
+     * Realiza o processo de autenticação solicitando credenciais ao usuário.
+     */
     private void login() {
         System.out.print("Digite seu nome: ");
         String loginName = sc.nextLine();
@@ -97,6 +120,11 @@ public class UserInterface {
         }
     }
 
+    /**
+     * Direciona o usuário autenticado ao menu apropriado para o seu perfil.
+     *
+     * @param currentUser usuário autenticado.
+     */
     private void startUserMenu(User currentUser) {
         BaseMenu<?> menu = null;
         if (currentUser instanceof Patient patient) {

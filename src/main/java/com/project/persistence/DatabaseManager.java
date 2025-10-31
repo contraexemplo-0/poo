@@ -12,9 +12,18 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Camada de persistência responsável por criar a estrutura do banco SQLite e
+ * executar operações relacionadas a usuários e medidas de glicose.
+ */
 public class DatabaseManager implements AutoCloseable {
     private final Connection conn;
 
+    /**
+     * Constrói o gerenciador inicializando a conexão e garantindo as tabelas.
+     *
+     * @throws SQLException caso ocorra erro ao conectar ou preparar o schema.
+     */
     public DatabaseManager() throws SQLException {
         conn = DriverManager.getConnection("jdbc:sqlite:glucose.db");
         createTables();
@@ -47,6 +56,15 @@ public class DatabaseManager implements AutoCloseable {
         }
     }
 
+    /**
+     * Insere um novo usuário persistindo suas credenciais e tipo.
+     *
+     * @param name     nome único do usuário.
+     * @param password senha em texto plano.
+     * @param type     tipo de usuário a ser gravado.
+     * @return identificador gerado no banco ou {@code -1} caso indisponível.
+     * @throws SQLException em falhas de persistência.
+     */
     public int insertUser(String name, String password, UserType type) throws SQLException {
         String sql = "INSERT INTO users(name, password, user_type) VALUES (?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -61,6 +79,14 @@ public class DatabaseManager implements AutoCloseable {
         }
     }
 
+    /**
+     * Verifica se existe usuário com as credenciais fornecidas.
+     *
+     * @param name     nome informado.
+     * @param password senha informada.
+     * @return {@code true} se as credenciais forem válidas.
+     * @throws SQLException em falhas de acesso ao banco.
+     */
     public boolean checkLogin(String name, String password) throws SQLException {
         String sql = "SELECT id FROM users WHERE name = ? AND password = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -72,6 +98,13 @@ public class DatabaseManager implements AutoCloseable {
         }
     }
 
+    /**
+     * Procura um usuário pelo nome e retorna uma instância concreta.
+     *
+     * @param name nome do usuário a ser localizado.
+     * @return usuário correspondente ou {@code null} caso não encontrado.
+     * @throws SQLException em falhas de consulta.
+     */
     public User findUserByName(String name) throws SQLException {
         String sql = "SELECT id, name, password, user_type FROM users WHERE name=?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -96,6 +129,13 @@ public class DatabaseManager implements AutoCloseable {
         };
     }
 
+    /**
+     * Insere uma medida de glicose relacionada ao usuário informado.
+     *
+     * @param userId identificador do usuário.
+     * @param m      medida de glicose preenchida.
+     * @throws SQLException em falhas de persistência.
+     */
     public void insertMeasure(int userId, GlucoseMeasure m) throws SQLException {
         String sql = "INSERT INTO glucose_measures(user_id, level, date, time, note) VALUES (?,?,?,?,?)";
         try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -111,6 +151,13 @@ public class DatabaseManager implements AutoCloseable {
         }
     }
 
+    /**
+     * Remove uma medida previamente registrada.
+     *
+     * @param userId    identificador do paciente dono da medida.
+     * @param measureId identificador da medida a ser excluída.
+     * @throws SQLException em falhas de exclusão.
+     */
     public void deleteMeasure(int userId, int measureId) throws SQLException {
         String sql = "DELETE FROM glucose_measures WHERE id = ? and user_id = ?";
         try(PreparedStatement ps = conn.prepareStatement(sql)){
@@ -120,6 +167,13 @@ public class DatabaseManager implements AutoCloseable {
         }
     }
 
+    /**
+     * Recupera todas as medidas associadas a um paciente ordenadas por data e hora.
+     *
+     * @param patient paciente cuja rotina deve ser carregada.
+     * @return lista de medidas encontradas.
+     * @throws SQLException em falhas de consulta.
+     */
     public List<GlucoseMeasure> loadMeasures(Patient patient) throws SQLException {
         List<GlucoseMeasure> list = new ArrayList<>();
         String sql = "SELECT id, level, date, time, note FROM glucose_measures WHERE user_id=? ORDER BY date,time";
@@ -141,5 +195,10 @@ public class DatabaseManager implements AutoCloseable {
         return list;
     }
 
+    /**
+     * Fecha a conexão com o banco de dados.
+     *
+     * @throws SQLException caso ocorra erro durante o fechamento.
+     */
     public void close() throws SQLException { conn.close(); }
 }

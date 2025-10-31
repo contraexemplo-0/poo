@@ -9,8 +9,19 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Menu dedicado aos pacientes, responsável por registrar e consultar medidas
+ * de glicose do usuário autenticado.
+ */
 public class PatientMenu extends BaseMenu<Patient> {
 
+    /**
+     * Cria um menu de paciente vinculado ao serviço informado.
+     *
+     * @param patient     paciente autenticado.
+     * @param userService serviço utilizado para persistir e consultar dados.
+     * @param scanner     fonte de entrada compartilhada.
+     */
     public PatientMenu(Patient patient, UserService userService, Scanner scanner) {
         super(patient, userService, scanner);
     }
@@ -40,6 +51,9 @@ public class PatientMenu extends BaseMenu<Patient> {
         }
     }
 
+    /**
+     * Solicita os dados necessários e registra uma nova medida de glicose.
+     */
     private void addMeasure() {
         float level = readFloat("Digite o valor da glicose: ");
         String note = readLine("Observação (opcional): ");
@@ -56,6 +70,9 @@ public class PatientMenu extends BaseMenu<Patient> {
         }
     }
 
+    /**
+     * Permite a exclusão de uma medida previamente registrada.
+     */
     private void removeMeasure() {
         try {
             List<RoutineEvent> events = userService.loadHistoric(user).getAll();
@@ -84,6 +101,9 @@ public class PatientMenu extends BaseMenu<Patient> {
         }
     }
 
+    /**
+     * Exibe o histórico das últimas medidas do paciente em um intervalo padrão.
+     */
     private void showRecentHistoric() {
         showHistoric(user, "Histórico dos últimos 7 dias:", 7);
     }

@@ -8,8 +8,19 @@ import com.project.service.UserService;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+/**
+ * Menu destinado aos profissionais de saúde, oferecendo visão agregada das
+ * informações de pacientes acompanhados.
+ */
 public class ProfessionalMenu extends BaseMenu<HealthProfessional> {
 
+    /**
+     * Cria um menu para profissionais de saúde autenticados.
+     *
+     * @param professional profissional autenticado.
+     * @param userService  serviço responsável por consultas aos dados.
+     * @param scanner      fonte de entrada utilizada pelo menu.
+     */
     public ProfessionalMenu(HealthProfessional professional, UserService userService, Scanner scanner) {
         super(professional, userService, scanner);
     }
@@ -37,11 +48,17 @@ public class ProfessionalMenu extends BaseMenu<HealthProfessional> {
         }
     }
 
+    /**
+     * Mostra o resumo consolidado do profissional de saúde atual.
+     */
     private void showProfessionalSummary() {
         System.out.println(user.getSummary());
         System.out.println(user.getDashboardSummary());
     }
 
+    /**
+     * Solicita um paciente pelo nome e exibe seu histórico recente.
+     */
     private void showPatientHistoric() {
         String patientName = readLine("Digite o nome do paciente: ");
 
