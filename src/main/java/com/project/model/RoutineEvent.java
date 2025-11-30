@@ -1,62 +1,120 @@
 package com.project.model;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Objects;
 
-/**
- * Representa um evento recorrente associado a um paciente.
- * Armazena data, horário e disponibiliza utilitários comuns para
- * subclasses que representam eventos específicos.
- */
-public abstract class RoutineEvent {
+public class RoutineEvent {
     private int id;
-    private LocalDate date;
-    private LocalTime time;
-    private Patient patient;
+    private int patientId;
 
-    protected RoutineEvent(LocalDate date, LocalTime time, Patient patient) {
-        setDate(date);
-        setTime(time);
-        setPatient(patient);
+    // --- Dados de glicemia ---
+    private Float glucoseLevel;
+    private LocalDateTime glucoseDateTime;
+    private GlucoseCategory glucoseCategory;
+
+    // --- Dados da refeição ---
+    private String mealDescription;
+    private Float carbs;
+    private Float gi;
+    private LocalDateTime mealDateTime;
+    private MealCategory mealCategory;
+
+    // --- Dados adicionais ---
+    private Float weight;
+    private Integer activityMinutes;
+
+    public int getId() {
+        return id;
     }
 
-    public int getId() { return id; }
-
-    public void setId(int id) { this.id = id; }
-
-    public LocalDate getDate() { return date; }
-
-    public void setDate(LocalDate date) {
-        this.date = Objects.requireNonNull(date, "Data não pode ser nula");
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public LocalTime getTime() { return time; }
-
-    public void setTime(LocalTime time) {
-        this.time = Objects.requireNonNull(time, "Hora não pode ser nula");
+    public int getPatientId() {
+        return patientId;
     }
 
-    public Patient getPatient() { return patient; }
-
-    public void setPatient(Patient patient) {
-        this.patient = Objects.requireNonNull(patient, "Paciente não pode ser nulo");
+    public void setPatientId(int patientId) {
+        this.patientId = patientId;
     }
 
-    public LocalDateTime getTimestamp() {
-        return LocalDateTime.of(date, time);
+    public Float getGlucoseLevel() {
+        return glucoseLevel;
     }
 
-    public String getFormattedTimestamp() {
-        return getDate() + " " + getTime();
+    public void setGlucoseLevel(Float glucoseLevel) {
+        this.glucoseLevel = glucoseLevel;
     }
 
-    public abstract String getFormattedSummary();
+    public LocalDateTime getGlucoseDateTime() {
+        return glucoseDateTime;
+    }
 
-    @Override
-    public String toString() {
-        return getFormattedTimestamp() + " - " + getFormattedSummary();
+    public void setGlucoseDateTime(LocalDateTime glucoseDateTime) {
+        this.glucoseDateTime = glucoseDateTime;
+    }
+
+    public GlucoseCategory getGlucoseCategory() {
+        return glucoseCategory;
+    }
+
+    public void setGlucoseCategory(GlucoseCategory glucoseCategory) {
+        this.glucoseCategory = glucoseCategory;
+    }
+
+    public String getMealDescription() {
+        return mealDescription;
+    }
+
+    public void setMealDescription(String mealDescription) {
+        this.mealDescription = mealDescription;
+    }
+
+    public Float getCarbs() {
+        return carbs;
+    }
+
+    public void setCarbs(Float carbs) {
+        this.carbs = carbs;
+    }
+
+    public Float getGi() {
+        return gi;
+    }
+
+    public void setGi(Float gi) {
+        this.gi = gi;
+    }
+
+    public LocalDateTime getMealDateTime() {
+        return mealDateTime;
+    }
+
+    public void setMealDateTime(LocalDateTime mealDateTime) {
+        this.mealDateTime = mealDateTime;
+    }
+
+    public MealCategory getMealCategory() {
+        return mealCategory;
+    }
+
+    public void setMealCategory(MealCategory mealCategory) {
+        this.mealCategory = mealCategory;
+    }
+
+    public Float getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Float weight) {
+        this.weight = weight;
+    }
+
+    public Integer getActivityMinutes() {
+        return activityMinutes;
+    }
+
+    public void setActivityMinutes(Integer activityMinutes) {
+        this.activityMinutes = activityMinutes;
     }
 }
-

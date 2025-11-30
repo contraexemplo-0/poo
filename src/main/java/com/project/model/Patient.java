@@ -2,7 +2,7 @@ package com.project.model;
 
 public class Patient extends User {
     public Patient(int id, String name, String password) {
-        super(id, name, password, UserType.PATIENT);
+        super(id, name, password);
     }
 
     @Override

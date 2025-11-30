@@ -1,29 +1,26 @@
 package com.project.app.menu;
 
-import com.project.model.GlucoseMeasure;
+import com.project.model.GlucoseCategory;
+import com.project.model.MealCategory;
 import com.project.model.Patient;
 import com.project.model.RoutineEvent;
-import com.project.service.UserService;
+import com.project.service.RoutineEventService;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 
 /**
- * Menu dedicado aos pacientes, responsável por registrar e consultar medidas
- * de glicose do usuário autenticado.
+ * Menu dedicado aos pacientes, responsável por registrar e consultar eventos de rotina.
  */
 public class PatientMenu extends BaseMenu<Patient> {
 
-    /**
-     * Cria um menu de paciente vinculado ao serviço informado.
-     *
-     * @param patient     paciente autenticado.
-     * @param userService serviço utilizado para persistir e consultar dados.
-     * @param scanner     fonte de entrada compartilhada.
-     */
-    public PatientMenu(Patient patient, UserService userService, Scanner scanner) {
-        super(patient, userService, scanner);
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+    public PatientMenu(Patient patient, RoutineEventService routineEventService, Scanner scanner) {
+        super(patient, routineEventService, scanner);
     }
 
     @Override
@@ -32,16 +29,18 @@ public class PatientMenu extends BaseMenu<Patient> {
 
         while (loggedIn) {
             System.out.println("\n--- Menu do Paciente ---");
-            System.out.println("1 - Registrar medida de glicose");
-            System.out.println("2 - Remover medida de glicose");
-            System.out.println("3 - Consultar histórico (últimos 7 dias)");
+            System.out.println("1 - Registrar glicemia");
+            System.out.println("2 - Registrar refeição + glicemia");
+            System.out.println("3 - Registrar apenas refeição");
+            System.out.println("4 - Ver histórico (últimos 7 dias)");
             System.out.println("0 - Logout");
             String choice = readLine("Escolha: ");
 
             switch (choice) {
-                case "1" -> addMeasure();
-                case "2" -> removeMeasure();
-                case "3" -> showRecentHistoric();
+                case "1" -> addGlucose();
+                case "2" -> addMealAndGlucose();
+                case "3" -> addMealOnly();
+                case "4" -> showRecentHistoric();
                 case "0" -> {
                     loggedIn = false;
                     System.out.println("Logout realizado.");
@@ -51,60 +50,102 @@ public class PatientMenu extends BaseMenu<Patient> {
         }
     }
 
-    /**
-     * Solicita os dados necessários e registra uma nova medida de glicose.
-     */
-    private void addMeasure() {
+    private void addGlucose() {
         float level = readFloat("Digite o valor da glicose: ");
-        String note = readLine("Observação (opcional): ");
+        GlucoseCategory category = readGlucoseCategory();
+        LocalDateTime dateTime = readDateTime("Data e hora da glicemia (yyyy-MM-dd HH:mm): ");
 
         try {
-            GlucoseMeasure measure = note.isBlank()
-                    ? userService.addMeasure(user, level)
-                    : userService.addMeasure(user, level, note);
-            System.out.println("Medida registrada: " + measure);
+            RoutineEvent event = routineEventService.registerGlucose(user, level, category, dateTime);
+            System.out.println("Glicemia registrada: " + formatEvent(event));
         } catch (SQLException e) {
-            System.out.println("Erro ao salvar medida: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Erro ao salvar glicemia: " + e.getMessage());
         }
     }
 
-    /**
-     * Permite a exclusão de uma medida previamente registrada.
-     */
-    private void removeMeasure() {
+    private void addMealAndGlucose() {
+        String description = readLine("Descreva a refeição: ");
+        MealCategory mealCategory = readMealCategory();
+        LocalDateTime mealDateTime = readDateTime("Data e hora da refeição (yyyy-MM-dd HH:mm): ");
+        float glucoseLevel = readFloat("Valor da glicemia: ");
+        GlucoseCategory glucoseCategory = readGlucoseCategory();
+        LocalDateTime glucoseDateTime = readDateTime("Data e hora da glicemia (yyyy-MM-dd HH:mm): ");
+
         try {
-            List<RoutineEvent> events = userService.loadHistoric(user).getAll();
-            if (events.isEmpty()) {
-                System.out.println("Nenhuma medida registrada.");
-                return;
-            }
-
-            for (int i = 0; i < events.size(); i++) {
-                System.out.println((i + 1) + " - " + events.get(i));
-            }
-
-            int choice = readInt("Digite o número da medida que deseja remover: ");
-            if (choice < 1 || choice > events.size()) {
-                System.out.println("Opção inválida.");
-                return;
-            }
-
-            RoutineEvent toDelete = events.get(choice - 1);
-            userService.removeMeasure(user, toDelete.getId());
-            System.out.println("Medida removida com sucesso!");
+            RoutineEvent event = routineEventService.registerMealAndGlucose(user, description, mealDateTime, mealCategory, glucoseLevel, glucoseCategory, glucoseDateTime);
+            System.out.println("Evento registrado: " + formatEvent(event));
         } catch (SQLException e) {
-            System.out.println("Erro ao remover medida: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Erro ao salvar evento: " + e.getMessage());
         }
     }
 
-    /**
-     * Exibe o histórico das últimas medidas do paciente em um intervalo padrão.
-     */
+    private void addMealOnly() {
+        String description = readLine("Descreva a refeição: ");
+        MealCategory mealCategory = readMealCategory();
+        LocalDateTime mealDateTime = readDateTime("Data e hora da refeição (yyyy-MM-dd HH:mm): ");
+
+        try {
+            RoutineEvent event = routineEventService.registerMealOnly(user, description, mealDateTime, mealCategory);
+            System.out.println("Refeição registrada: " + formatEvent(event));
+        } catch (SQLException e) {
+            System.out.println("Erro ao salvar refeição: " + e.getMessage());
+        }
+    }
+
     private void showRecentHistoric() {
-        showHistoric(user, "Histórico dos últimos 7 dias:", 7);
+        try {
+            List<RoutineEvent> events = routineEventService.loadEvents(user, 7);
+            if (events.isEmpty()) {
+                System.out.println("Nenhum registro encontrado.");
+                return;
+            }
+            System.out.println("Histórico dos últimos 7 dias:");
+            for (RoutineEvent event : events) {
+                System.out.println(formatEvent(event));
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro ao carregar histórico: " + e.getMessage());
+        }
+    }
+
+    private LocalDateTime readDateTime(String prompt) {
+        while (true) {
+            try {
+                String input = readLine(prompt);
+                return LocalDateTime.parse(input, DATE_TIME_FORMATTER);
+            } catch (Exception e) {
+                System.out.println("Formato inválido. Utilize yyyy-MM-dd HH:mm.");
+            }
+        }
+    }
+
+    private GlucoseCategory readGlucoseCategory() {
+        System.out.println("Selecione a categoria de glicemia:");
+        for (GlucoseCategory category : GlucoseCategory.values()) {
+            System.out.println("- " + category.name());
+        }
+        while (true) {
+            String input = readLine("Categoria: ").toUpperCase();
+            try {
+                return GlucoseCategory.valueOf(input);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Categoria inválida. Tente novamente.");
+            }
+        }
+    }
+
+    private MealCategory readMealCategory() {
+        System.out.println("Selecione a categoria da refeição:");
+        for (MealCategory category : MealCategory.values()) {
+            System.out.println("- " + category.name());
+        }
+        while (true) {
+            String input = readLine("Categoria: ").toUpperCase();
+            try {
+                return MealCategory.valueOf(input);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Categoria inválida. Tente novamente.");
+            }
+        }
     }
 }
