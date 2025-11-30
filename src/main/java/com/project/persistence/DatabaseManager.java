@@ -37,6 +37,8 @@ public class DatabaseManager implements AutoCloseable {
         user_type TEXT NOT NULL DEFAULT 'PATIENT'
         )""");
 
+            ensureUserTypeColumn();
+
             st.execute("""
         CREATE TABLE IF NOT EXISTS routine_events (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -53,6 +55,26 @@ public class DatabaseManager implements AutoCloseable {
         activity_minutes INTEGER,
         FOREIGN KEY(patient_id) REFERENCES users(id)
         )""");
+        }
+    }
+
+    private void ensureUserTypeColumn() throws SQLException {
+        String pragmaSql = "PRAGMA table_info(users)";
+        boolean hasUserType = false;
+
+        try (PreparedStatement ps = conn.prepareStatement(pragmaSql); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                if ("user_type".equalsIgnoreCase(rs.getString("name"))) {
+                    hasUserType = true;
+                    break;
+                }
+            }
+        }
+
+        if (!hasUserType) {
+            try (Statement alter = conn.createStatement()) {
+                alter.executeUpdate("ALTER TABLE users ADD COLUMN user_type TEXT NOT NULL DEFAULT 'PATIENT'");
+            }
         }
     }
 
