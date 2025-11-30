@@ -2,11 +2,9 @@ package com.project.app;
 
 import com.project.app.menu.BaseMenu;
 import com.project.app.menu.PatientMenu;
-import com.project.app.menu.ProfessionalMenu;
-import com.project.model.HealthProfessional;
 import com.project.model.Patient;
 import com.project.model.User;
-import com.project.model.UserType;
+import com.project.service.RoutineEventService;
 import com.project.service.UserService;
 
 import java.sql.SQLException;
@@ -18,20 +16,14 @@ import java.util.Scanner;
  */
 public class UserInterface {
     private final UserService userService;
+    private final RoutineEventService routineEventService;
     private final Scanner sc = new Scanner(System.in);
 
-    /**
-     * Constrói a interface associando-a ao serviço principal da aplicação.
-     *
-     * @param userService serviço de usuários utilizado para autenticação e operações.
-     */
-    public UserInterface(UserService userService) {
+    public UserInterface(UserService userService, RoutineEventService routineEventService) {
         this.userService = userService;
+        this.routineEventService = routineEventService;
     }
 
-    /**
-     * Inicia o loop principal da aplicação em modo texto.
-     */
     public void start() {
         boolean running = true;
 
@@ -53,9 +45,6 @@ public class UserInterface {
         System.out.println("Sistema encerrado.");
     }
 
-    /**
-     * Executa o fluxo de cadastro de um novo usuário.
-     */
     private void registerUser() {
         System.out.print("Digite seu nome: ");
         String name = sc.nextLine();
@@ -63,8 +52,7 @@ public class UserInterface {
         String password = sc.nextLine();
 
         try {
-            UserType type = askUserType();
-            User user = userService.register(name, password, type);
+            User user = userService.register(name, password);
             System.out.println("Usuário registrado com sucesso! ID: " + user.getId());
             System.out.println(user.getSummary());
         } catch (SQLException e) {
@@ -72,33 +60,6 @@ public class UserInterface {
         }
     }
 
-    /**
-     * Pergunta qual tipo de usuário deve ser criado no cadastro.
-     *
-     * @return tipo de usuário selecionado.
-     */
-    private UserType askUserType() {
-        while (true) {
-            System.out.println("Selecione o tipo de usuário:");
-            System.out.println("1 - Paciente");
-            System.out.println("2 - Profissional de Saúde");
-            System.out.print("Escolha: ");
-
-            String choice = sc.nextLine();
-            switch (choice) {
-                case "1":
-                    return UserType.PATIENT;
-                case "2":
-                    return UserType.HEALTH_PROFESSIONAL;
-                default:
-                    System.out.println("Opção inválida. Tente novamente.");
-            }
-        }
-    }
-
-    /**
-     * Realiza o processo de autenticação solicitando credenciais ao usuário.
-     */
     private void login() {
         System.out.print("Digite seu nome: ");
         String loginName = sc.nextLine();
@@ -120,17 +81,10 @@ public class UserInterface {
         }
     }
 
-    /**
-     * Direciona o usuário autenticado ao menu apropriado para o seu perfil.
-     *
-     * @param currentUser usuário autenticado.
-     */
     private void startUserMenu(User currentUser) {
         BaseMenu<?> menu = null;
         if (currentUser instanceof Patient patient) {
-            menu = new PatientMenu(patient, userService, sc);
-        } else if (currentUser instanceof HealthProfessional professional) {
-            menu = new ProfessionalMenu(professional, userService, sc);
+            menu = new PatientMenu(patient, routineEventService, sc);
         }
 
         if (menu == null) {

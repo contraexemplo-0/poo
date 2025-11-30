@@ -1,20 +1,18 @@
 package com.project.persistence;
 
-import com.project.model.GlucoseMeasure;
-import com.project.model.HealthProfessional;
+import com.project.model.GlucoseCategory;
+import com.project.model.MealCategory;
 import com.project.model.Patient;
-import com.project.model.User;
-import com.project.model.UserType;
+import com.project.model.RoutineEvent;
 
 import java.sql.*;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Camada de persistência responsável por criar a estrutura do banco SQLite e
- * executar operações relacionadas a usuários e medidas de glicose.
+ * executar operações relacionadas a usuários e eventos de rotina.
  */
 public class DatabaseManager implements AutoCloseable {
     private final Connection conn;
@@ -39,38 +37,52 @@ public class DatabaseManager implements AutoCloseable {
         user_type TEXT NOT NULL DEFAULT 'PATIENT'
         )""");
 
-            st.execute("CREATE TABLE IF NOT EXISTS glucose_measures (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, level REAL NOT NULL, date TEXT NOT NULL, time TEXT NOT NULL, note TEXT, FOREIGN KEY(user_id) REFERENCES users(id))");
-        }
+            ensureUserTypeColumn();
 
-        ensureUserTypeColumn();
+            st.execute("""
+        CREATE TABLE IF NOT EXISTS routine_events (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        patient_id INTEGER NOT NULL,
+        glucose_level REAL,
+        glucose_datetime TEXT,
+        glucose_category TEXT,
+        meal_description TEXT,
+        carbs REAL,
+        gi REAL,
+        meal_datetime TEXT,
+        meal_category TEXT,
+        weight REAL,
+        activity_minutes INTEGER,
+        FOREIGN KEY(patient_id) REFERENCES users(id)
+        )""");
+        }
     }
 
     private void ensureUserTypeColumn() throws SQLException {
-        DatabaseMetaData metaData = conn.getMetaData();
-        try (ResultSet rs = metaData.getColumns(null, null, "users", "user_type")) {
-            if (!rs.next()) {
-                try (Statement alter = conn.createStatement()) {
-                    alter.execute("ALTER TABLE users ADD COLUMN user_type TEXT NOT NULL DEFAULT 'PATIENT'");
+        String pragmaSql = "PRAGMA table_info(users)";
+        boolean hasUserType = false;
+
+        try (PreparedStatement ps = conn.prepareStatement(pragmaSql); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                if ("user_type".equalsIgnoreCase(rs.getString("name"))) {
+                    hasUserType = true;
+                    break;
                 }
+            }
+        }
+
+        if (!hasUserType) {
+            try (Statement alter = conn.createStatement()) {
+                alter.executeUpdate("ALTER TABLE users ADD COLUMN user_type TEXT NOT NULL DEFAULT 'PATIENT'");
             }
         }
     }
 
-    /**
-     * Insere um novo usuário persistindo suas credenciais e tipo.
-     *
-     * @param name     nome único do usuário.
-     * @param password senha em texto plano.
-     * @param type     tipo de usuário a ser gravado.
-     * @return identificador gerado no banco ou {@code -1} caso indisponível.
-     * @throws SQLException em falhas de persistência.
-     */
-    public int insertUser(String name, String password, UserType type) throws SQLException {
-        String sql = "INSERT INTO users(name, password, user_type) VALUES (?, ?, ?)";
+    public int insertUser(String name, String password) throws SQLException {
+        String sql = "INSERT INTO users(name, password, user_type) VALUES (?, ?, 'PATIENT')";
         try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, name);
             ps.setString(2, password);
-            ps.setString(3, type.name());
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) return rs.getInt(1);
@@ -79,34 +91,8 @@ public class DatabaseManager implements AutoCloseable {
         }
     }
 
-    /**
-     * Verifica se existe usuário com as credenciais fornecidas.
-     *
-     * @param name     nome informado.
-     * @param password senha informada.
-     * @return {@code true} se as credenciais forem válidas.
-     * @throws SQLException em falhas de acesso ao banco.
-     */
-    public boolean checkLogin(String name, String password) throws SQLException {
-        String sql = "SELECT id FROM users WHERE name = ? AND password = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, name);
-            ps.setString(2, password);
-            try (ResultSet rs = ps.executeQuery()) {
-                return rs.next(); // true se encontrou o usuário
-            }
-        }
-    }
-
-    /**
-     * Procura um usuário pelo nome e retorna uma instância concreta.
-     *
-     * @param name nome do usuário a ser localizado.
-     * @return usuário correspondente ou {@code null} caso não encontrado.
-     * @throws SQLException em falhas de consulta.
-     */
     public User findUserByName(String name) throws SQLException {
-        String sql = "SELECT id, name, password, user_type FROM users WHERE name=?";
+        String sql = "SELECT id, name, password FROM users WHERE name=?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, name);
             try (ResultSet rs = ps.executeQuery()) {
@@ -114,85 +100,125 @@ public class DatabaseManager implements AutoCloseable {
                     int id = rs.getInt("id");
                     String username = rs.getString("name");
                     String password = rs.getString("password");
-                    UserType type = UserType.valueOf(rs.getString("user_type"));
-                    return createUserInstance(id, username, password, type);
+                    return new Patient(id, username, password);
                 }
             }
         }
         return null;
     }
 
-    private User createUserInstance(int id, String name, String password, UserType type) {
-        return switch (type) {
-            case PATIENT -> new Patient(id, name, password);
-            case HEALTH_PROFESSIONAL -> new HealthProfessional(id, name, password);
-        };
-    }
-
-    /**
-     * Insere uma medida de glicose relacionada ao usuário informado.
-     *
-     * @param userId identificador do usuário.
-     * @param m      medida de glicose preenchida.
-     * @throws SQLException em falhas de persistência.
-     */
-    public void insertMeasure(int userId, GlucoseMeasure m) throws SQLException {
-        String sql = "INSERT INTO glucose_measures(user_id, level, date, time, note) VALUES (?,?,?,?,?)";
+    public void insertRoutineEvent(RoutineEvent event) throws SQLException {
+        String sql = "INSERT INTO routine_events(patient_id, glucose_level, glucose_datetime, glucose_category, meal_description, carbs, gi, meal_datetime, meal_category, weight, activity_minutes) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
         try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(1, userId);
-            ps.setFloat(2, m.getLevel());
-            ps.setString(3, m.getDate().toString());
-            ps.setString(4, m.getTime().toString());
-            ps.setString(5, m.getNote());
+            ps.setInt(1, event.getPatientId());
+            ps.setObject(2, event.getGlucoseLevel());
+            ps.setString(3, toText(event.getGlucoseDateTime()));
+            ps.setString(4, enumToText(event.getGlucoseCategory()));
+            ps.setString(5, event.getMealDescription());
+            ps.setObject(6, event.getCarbs());
+            ps.setObject(7, event.getGi());
+            ps.setString(8, toText(event.getMealDateTime()));
+            ps.setString(9, enumToText(event.getMealCategory()));
+            ps.setObject(10, event.getWeight());
+            ps.setObject(11, event.getActivityMinutes());
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (rs.next()) m.setId(rs.getInt(1));
-            }
-        }
-    }
-
-    /**
-     * Remove uma medida previamente registrada.
-     *
-     * @param userId    identificador do paciente dono da medida.
-     * @param measureId identificador da medida a ser excluída.
-     * @throws SQLException em falhas de exclusão.
-     */
-    public void deleteMeasure(int userId, int measureId) throws SQLException {
-        String sql = "DELETE FROM glucose_measures WHERE id = ? and user_id = ?";
-        try(PreparedStatement ps = conn.prepareStatement(sql)){
-            ps.setInt(1, measureId);
-            ps.setInt(2, userId);
-            ps.executeUpdate();
-        }
-    }
-
-    /**
-     * Recupera todas as medidas associadas a um paciente ordenadas por data e hora.
-     *
-     * @param patient paciente cuja rotina deve ser carregada.
-     * @return lista de medidas encontradas.
-     * @throws SQLException em falhas de consulta.
-     */
-    public List<GlucoseMeasure> loadMeasures(Patient patient) throws SQLException {
-        List<GlucoseMeasure> list = new ArrayList<>();
-        String sql = "SELECT id, level, date, time, note FROM glucose_measures WHERE user_id=? ORDER BY date,time";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, patient.getId());
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    GlucoseMeasure m = new GlucoseMeasure(
-                            patient,
-                            rs.getFloat("level"),
-                            LocalDate.parse(rs.getString("date")),
-                            LocalTime.parse(rs.getString("time")),
-                            rs.getString("note"));
-                    m.setId(rs.getInt("id"));
-                    list.add(m);
+                if (rs.next()) {
+                    event.setId(rs.getInt(1));
                 }
             }
         }
+    }
+
+    public void updateRoutineEvent(RoutineEvent event) throws SQLException {
+        String sql = "UPDATE routine_events SET glucose_level=?, glucose_datetime=?, glucose_category=?, meal_description=?, carbs=?, gi=?, meal_datetime=?, meal_category=?, weight=?, activity_minutes=? WHERE id=? AND patient_id=?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setObject(1, event.getGlucoseLevel());
+            ps.setString(2, toText(event.getGlucoseDateTime()));
+            ps.setString(3, enumToText(event.getGlucoseCategory()));
+            ps.setString(4, event.getMealDescription());
+            ps.setObject(5, event.getCarbs());
+            ps.setObject(6, event.getGi());
+            ps.setString(7, toText(event.getMealDateTime()));
+            ps.setString(8, enumToText(event.getMealCategory()));
+            ps.setObject(9, event.getWeight());
+            ps.setObject(10, event.getActivityMinutes());
+            ps.setInt(11, event.getId());
+            ps.setInt(12, event.getPatientId());
+            ps.executeUpdate();
+        }
+    }
+
+    public List<RoutineEvent> loadEventsByPatient(Patient patient) throws SQLException {
+        String sql = "SELECT * FROM routine_events WHERE patient_id=? ORDER BY COALESCE(glucose_datetime, meal_datetime)";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, patient.getId());
+            try (ResultSet rs = ps.executeQuery()) {
+                return mapEvents(rs);
+            }
+        }
+    }
+
+    public List<RoutineEvent> loadEventsByPatientAndDays(Patient patient, int days) throws SQLException {
+        LocalDateTime threshold = LocalDateTime.now().minusDays(days);
+        String sql = "SELECT * FROM routine_events WHERE patient_id=? AND COALESCE(glucose_datetime, meal_datetime) >= ? ORDER BY COALESCE(glucose_datetime, meal_datetime)";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, patient.getId());
+            ps.setString(2, threshold.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                return mapEvents(rs);
+            }
+        }
+    }
+
+    public void deleteEvent(int eventId, int patientId) throws SQLException {
+        String sql = "DELETE FROM routine_events WHERE id = ? AND patient_id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, eventId);
+            ps.setInt(2, patientId);
+            ps.executeUpdate();
+        }
+    }
+
+    private List<RoutineEvent> mapEvents(ResultSet rs) throws SQLException {
+        List<RoutineEvent> list = new ArrayList<>();
+        while (rs.next()) {
+            RoutineEvent event = new RoutineEvent();
+            event.setId(rs.getInt("id"));
+            event.setPatientId(rs.getInt("patient_id"));
+            event.setGlucoseLevel((Float) rs.getObject("glucose_level"));
+            event.setGlucoseDateTime(parseDateTime(rs.getString("glucose_datetime")));
+            event.setGlucoseCategory(parseGlucoseCategory(rs.getString("glucose_category")));
+            event.setMealDescription(rs.getString("meal_description"));
+            event.setCarbs((Float) rs.getObject("carbs"));
+            event.setGi((Float) rs.getObject("gi"));
+            event.setMealDateTime(parseDateTime(rs.getString("meal_datetime")));
+            event.setMealCategory(parseMealCategory(rs.getString("meal_category")));
+            event.setWeight((Float) rs.getObject("weight"));
+            event.setActivityMinutes((Integer) rs.getObject("activity_minutes"));
+            list.add(event);
+        }
         return list;
+    }
+
+    private String enumToText(Enum<?> value) {
+        return value != null ? value.name() : null;
+    }
+
+    private LocalDateTime parseDateTime(String text) {
+        return text != null ? LocalDateTime.parse(text) : null;
+    }
+
+    private GlucoseCategory parseGlucoseCategory(String value) {
+        return value != null ? GlucoseCategory.valueOf(value) : null;
+    }
+
+    private MealCategory parseMealCategory(String value) {
+        return value != null ? MealCategory.valueOf(value) : null;
+    }
+
+    private String toText(LocalDateTime dateTime) {
+        return dateTime != null ? dateTime.toString() : null;
     }
 
     /**
