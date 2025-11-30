@@ -1,32 +1,42 @@
 package com.project.model;
 
-public class User {
+public abstract class User {
     private int id;
     private String name;
     private String password; // para simplificar
-    private final UserType type;
-    //private final Historic historic = new Historic();
 
-    protected User(int id, String name, String password, UserType type) {
+    protected User(int id, String name, String password) {
         this.id = id;
         this.name = name;
         this.password = password;
-        this.type = type;
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public UserType getType() { return type; }
+    public String getName() {
+        return name;
+    }
 
-    //public Historic getHistoric() { return historic; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public boolean checkPassword(String input) { return password.equals(input); }
+    public boolean checkPassword(String input) {
+        return password.equals(input);
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public String getSummary() {
-        return "Usuário: " + name + " (" + type + ")";
+        return "Usuário: " + name;
     }
 
     public String getDashboardSummary() {
