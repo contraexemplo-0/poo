@@ -1,0 +1,85 @@
+/* Fundo geral */
+.root {
+    -fx-background-color: #F4F7F7;
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+/* Cartão principal */
+#card {
+    -fx-background-color: white;
+    -fx-padding: 40 50;
+    -fx-background-radius: 14;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, 4);
+}
+
+/* Título */
+#title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2A2A2A;
+}
+
+/* Subtítulo */
+#subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #5A5A5A;
+}
+
+/* Campos de texto */
+.text-field, .password-field {
+    -fx-background-color: #F4F7F7;
+    -fx-background-radius: 8;
+    -fx-padding: 10 14;
+    -fx-font-size: 14px;
+    -fx-border-color: #DCE3E3;
+    -fx-border-radius: 8;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #1A8AA5;
+    -fx-effect: dropshadow(gaussian, rgba(26,138,165,0.25), 10, 0, 0, 2);
+}
+
+/* Botão Login */
+#loginButton {
+    -fx-background-radius: 10;
+    -fx-font-size: 16px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+
+    /* Gradiente primário → secundário */
+    -fx-background-color: linear-gradient(to right, #1A8AA5, #45C4B0);
+}
+
+#loginButton:hover {
+    -fx-opacity: 0.9;
+}
+
+#loginButton:pressed {
+    -fx-opacity: 0.8;
+}
+
+/* Link "Cadastre-se" */
+.link-label {
+    -fx-text-fill: #1A8AA5;
+    -fx-font-weight: bold;
+}
+
+.link-label:hover {
+    -fx-underline: true;
+}
+
+/* Logo */
+#logo {
+    -fx-fit-height: 80;
+}
+
+/* Caixa demo opcional */
+.demo-box {
+    -fx-background-color: #E9F6FA;
+    -fx-background-radius: 8;
+    -fx-padding: 8 12;
+    -fx-text-fill: #1A8AA5;
+    -fx-font-size: 13px;
+    -fx-alignment: center;
+}

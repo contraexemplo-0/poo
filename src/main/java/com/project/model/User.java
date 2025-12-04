@@ -27,6 +27,10 @@ public abstract class User {
         this.name = name;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public boolean checkPassword(String input) {
         return password.equals(input);
     }

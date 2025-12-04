@@ -2,25 +2,37 @@ package com.project.model;
 
 import java.time.LocalDateTime;
 
+/**
+ * Representa um evento de rotina do paciente.
+ *
+ * Pode conter:
+ * - apenas glicemia
+ * - apenas refeição
+ * - glicemia + refeição (evento completo)
+ */
 public class RoutineEvent {
+
     private int id;
     private int patientId;
 
     // --- Dados de glicemia ---
-    private Float glucoseLevel;
-    private LocalDateTime glucoseDateTime;
-    private GlucoseCategory glucoseCategory;
+    private Float glucoseLevel;              // mg/dL (pode ser null)
+    private LocalDateTime glucoseDateTime;   // quando a glicemia foi medida
+    private GlucoseCategory glucoseCategory; // JEJUM, PRE, POS, ALEATÓRIA
 
     // --- Dados da refeição ---
-    private String mealDescription;
-    private Float carbs;
-    private Float gi;
-    private LocalDateTime mealDateTime;
-    private MealCategory mealCategory;
+    private String mealDescription;          // descrição textual
+    private Float carbs;                     // carboidratos estimados (g)
+    private Float gi;                        // índice glicêmico estimado
+    private LocalDateTime mealDateTime;      // quando a refeição ocorreu
+    private MealCategory mealCategory;       // café, almoço, lanche, etc.
 
-    // --- Dados adicionais ---
-    private Float weight;
-    private Integer activityMinutes;
+    // --- Dados opcionais ---
+    private Float weight;                    // peso em kg
+    private Integer activityMinutes;         // minutos de atividade física
+
+    public RoutineEvent() {
+    }
 
     public int getId() {
         return id;
@@ -117,4 +129,15 @@ public class RoutineEvent {
     public void setActivityMinutes(Integer activityMinutes) {
         this.activityMinutes = activityMinutes;
     }
+
+    // Helpers que podem ser úteis no futuro (JavaFX, relatórios, etc.)
+
+    public boolean hasGlucose() {
+        return glucoseLevel != null && glucoseDateTime != null;
+    }
+
+    public boolean hasMeal() {
+        return mealDescription != null && !mealDescription.isBlank();
+    }
+
 }

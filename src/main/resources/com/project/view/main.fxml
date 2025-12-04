@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.project.controller.MainController"
+            prefWidth="900" prefHeight="600">
+
+    <!-- ====================== MENU LATERAL ====================== -->
+    <left>
+        <VBox spacing="20" prefWidth="180" alignment="TOP_CENTER"
+              style="-fx-background-color: #2C3E50; -fx-padding: 25;">
+
+            <Label text="Menu"
+                   style="-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold;"/>
+
+            <Button text="Evolução"
+                    onAction="#showDashboard"
+                    prefWidth="140"
+                    style="-fx-background-color: #34495E; -fx-text-fill: white;"/>
+
+            <Button text="Relatórios"
+                    onAction="#showReports"
+                    prefWidth="140"
+                    style="-fx-background-color: #34495E; -fx-text-fill: white;"/>
+
+            <Button text="Educação"
+                    onAction="#showEducation"
+                    prefWidth="140"
+                    style="-fx-background-color: #34495E; -fx-text-fill: white;"/>
+
+            <Button text="Mais"
+                    onAction="#showMore"
+                    prefWidth="140"
+                    style="-fx-background-color: #34495E; -fx-text-fill: white;"/>
+
+            <Separator prefWidth="130"/>
+
+            <Button text="Sair"
+                    onAction="#logout"
+                    prefWidth="140"
+                    style="-fx-background-color: #E74C3C; -fx-text-fill: white;"/>
+        </VBox>
+    </left>
+
+    <!-- ====================== ÁREA DE CONTEÚDO ====================== -->
+    <center>
+        <StackPane fx:id="contentArea"
+                   style="-fx-background-color: #ECF0F1;"
+                   prefWidth="700" prefHeight="600"/>
+    </center>
+
+</BorderPane>

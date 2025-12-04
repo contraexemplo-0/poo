@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.project.controller.RegisterController"
+            prefWidth="450" prefHeight="620">
+
+    <center>
+        <VBox alignment="CENTER" spacing="12" prefWidth="350">
+
+            <Label text="Criar Conta"
+                   style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+
+            <TextField fx:id="nameField" promptText="Nome completo" prefWidth="270"/>
+            <TextField fx:id="emailField" promptText="Email" prefWidth="270"/>
+
+            <DatePicker fx:id="birthDatePicker" promptText="Data de nascimento"/>
+
+            <ComboBox fx:id="genderCombo" promptText="Gênero" prefWidth="270"/>
+            <ComboBox fx:id="diabetesTypeCombo" promptText="Tipo de diabetes" prefWidth="270"/>
+
+            <DatePicker fx:id="diagnosisDatePicker" promptText="Data de diagnóstico"/>
+
+            <PasswordField fx:id="passwordField" promptText="Senha" prefWidth="270"/>
+
+            <Button text="Cadastrar"
+                    prefWidth="220"
+                    style="-fx-background-color: #4CAF50; -fx-text-fill: white;"
+                    onAction="#onRegister"/>
+
+            <Hyperlink text="Já tem conta? Entrar"
+                       onAction="#onGoToLogin"/>
+
+            <Label fx:id="errorLabel"
+                   textFill="red"
+                   style="-fx-font-size: 12px;"
+                   visible="false"/>
+        </VBox>
+    </center>
+
+</BorderPane>

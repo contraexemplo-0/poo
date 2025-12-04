@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.project.controller.NewEventDialogController"
+            prefWidth="420" prefHeight="500"
+            style="-fx-background-color: white; -fx-padding: 20;">
+
+    <top>
+        <Label text="Novo Registro"
+               style="-fx-font-size: 22px; -fx-font-weight: bold;"
+               BorderPane.alignment="CENTER"/>
+    </top>
+
+    <center>
+        <TabPane fx:id="tabPane" prefHeight="400">
+
+            <!-- ======================= ABA GLICEMIA ======================= -->
+            <Tab text="Glicemia" closable="false">
+                <VBox spacing="12" style="-fx-padding: 15;">
+
+                    <Label text="Valor da Glicemia (mg/dL)"/>
+                    <TextField fx:id="glucoseField" promptText="Ex: 110"/>
+
+                    <Label text="Categoria"/>
+                    <ComboBox fx:id="glucoseCategoryCombo"/>
+
+                    <Label text="Data e Hora"/>
+                    <TextField fx:id="glucoseDateTimeField"
+                               promptText="yyyy-MM-dd HH:mm"/>
+
+                </VBox>
+            </Tab>
+
+            <!-- ======================= ABA REFEIÇÃO ======================= -->
+            <Tab text="Refeição" closable="false">
+                <VBox spacing="12" style="-fx-padding: 15;">
+
+                    <Label text="Descrição da Refeição"/>
+                    <TextField fx:id="mealDescriptionField" promptText="Ex: Arroz, frango, salada"/>
+
+                    <Label text="Categoria"/>
+                    <ComboBox fx:id="mealCategoryCombo"/>
+
+                    <Label text="Carboidratos (g)"/>
+                    <TextField fx:id="carbsField" promptText="Ex: 45"/>
+
+                    <Label text="Índice Glicêmico (GI)"/>
+                    <TextField fx:id="giField" promptText="Ex: 60"/>
+
+                    <Label text="Data e Hora"/>
+                    <TextField fx:id="mealDateTimeField" promptText="yyyy-MM-dd HH:mm"/>
+
+                </VBox>
+            </Tab>
+
+        </TabPane>
+    </center>
+
+    <bottom>
+        <HBox spacing="20" alignment="CENTER_RIGHT" style="-fx-padding: 10 0 0 0;">
+            <Button text="Cancelar" onAction="#onCancel"/>
+            <Button text="Salvar" onAction="#onSave"
+                    style="-fx-background-color: #27AE60; -fx-text-fill: white;"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

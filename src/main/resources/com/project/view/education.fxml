@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.project.controller.EducationController"
+            prefWidth="800" prefHeight="600"
+            style="-fx-background-color: #ECF0F1;">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-padding: 20;">
+            <Label text="Educação"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true">
+            <VBox spacing="15" style="-fx-padding: 20;"
+                  prefWidth="700">
+
+                <Label text="O que é Diabetes?"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+                <Label wrapText="true"
+                       text="Diabetes é uma condição em que o organismo apresenta dificuldades para controlar adequadamente os níveis de glicose no sangue. Isso ocorre por deficiência na produção de insulina (Tipo 1), resistência à insulina (Tipo 2), ou uma combinação de ambos." />
+
+                <Label text="Sintomas Comuns"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+                <Label wrapText="true"
+                       text="- Sede excessiva\n- Vontade de urinar com frequência\n- Cansaço\n- Visão embaçada\n- Fome exagerada\n- Perda de peso (em alguns casos)" />
+
+                <Label text="Hiperglicemia (glicose alta)"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+                <Label wrapText="true"
+                       text="A hiperglicemia ocorre quando a glicose ultrapassa os níveis recomendados. Se persistente, pode causar danos a longo prazo, como problemas nos rins, visão, coração e nervos." />
+
+                <Label text="Hipoglicemia (glicose baixa)"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+                <Label wrapText="true"
+                       text="A hipoglicemia acontece quando os níveis de glicose caem demais. Pode provocar tremores, suores, tonturas, confusão mental e, em casos graves, perda de consciência." />
+
+                <Label text="Importância do Monitoramento"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+                <Label wrapText="true"
+                       text="Monitorar a glicemia regularmente ajuda na tomada de decisões sobre alimentação, atividade física, medicação e controle geral da saúde." />
+
+                <Label text="Boas Práticas"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+                <Label wrapText="true"
+                       text="- Manter uma alimentação equilibrada\n- Praticar atividade física\n- Seguir orientações do seu médico\n- Registrar refeições e glicemias\n- Dormir bem e reduzir estresse" />
+
+                <Label text="Quando buscar ajuda médica?"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+                <Label wrapText="true"
+                       text="Procure um especialista caso apresente glicemias muito baixas ou altas repetidamente, sintomas persistentes ou dúvidas sobre o tratamento." />
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

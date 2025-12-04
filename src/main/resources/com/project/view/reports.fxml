@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.project.controller.ReportsController"
+            prefWidth="800" prefHeight="600"
+            style="-fx-background-color: #ECF0F1;">
+
+    <!-- TOPO: título + filtro -->
+    <top>
+        <HBox spacing="15" alignment="CENTER_LEFT"
+              style="-fx-padding: 20;">
+            <Label text="Relatórios"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+
+            <Pane HBox.hgrow="ALWAYS"/>
+
+            <Label text="Período:"/>
+            <ComboBox fx:id="periodCombo" prefWidth="120"/>
+        </HBox>
+    </top>
+
+    <!-- CENTRO: cards e lista -->
+    <center>
+        <VBox spacing="20" style="-fx-padding: 0 20 20 20;">
+
+            <!-- CARDS -->
+            <HBox spacing="20">
+
+                <VBox alignment="CENTER" spacing="5"
+                      style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 8;">
+                    <Label text="Média" style="-fx-font-weight: bold;"/>
+                    <Label fx:id="meanLabel" style="-fx-font-size: 18px;"/>
+                </VBox>
+
+                <VBox alignment="CENTER" spacing="5"
+                      style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 8;">
+                    <Label text="Máxima" style="-fx-font-weight: bold;"/>
+                    <Label fx:id="maxLabel" style="-fx-font-size: 18px;"/>
+                </VBox>
+
+                <VBox alignment="CENTER" spacing="5"
+                      style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 8;">
+                    <Label text="Mínima" style="-fx-font-weight: bold;"/>
+                    <Label fx:id="minLabel" style="-fx-font-size: 18px;"/>
+                </VBox>
+
+                <VBox alignment="CENTER" spacing="5"
+                      style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 8;">
+                    <Label text="Hiper" style="-fx-font-weight: bold;"/>
+                    <Label fx:id="hyperLabel" style="-fx-font-size: 18px; -fx-text-fill: #E74C3C;"/>
+                </VBox>
+
+                <VBox alignment="CENTER" spacing="5"
+                      style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 8;">
+                    <Label text="Hipo" style="-fx-font-weight: bold;"/>
+                    <Label fx:id="hypoLabel" style="-fx-font-size: 18px; -fx-text-fill: #3498DB;"/>
+                </VBox>
+
+            </HBox>
+
+            <!-- LISTA DE EVENTOS -->
+            <VBox spacing="10">
+                <Label text="Eventos no período"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+                <ListView fx:id="eventsList" prefHeight="350"/>
+            </VBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>
