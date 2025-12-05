@@ -16,22 +16,40 @@ import javafx.scene.control.ListView;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+/**
+ * Controller responsável pela tela de dashboard principal.
+ * Exibe gráfico de glicose, estatísticas resumidas e lista de eventos recentes.
+ */
 public class DashboardController {
 
+    /** Gráfico de linha exibindo valores de glicemia. */
     @FXML private LineChart<String, Number> glucoseChart;
 
+    /** Label exibindo a HbA1c estimada. */
     @FXML private Label hba1cLabel;
+    /** Label exibindo a média glicêmica dos últimos registros. */
     @FXML private Label meanLabel;
+    /** Label exibindo quantidade de episódios de hiperglicemia. */
     @FXML private Label hyperLabel;
+    /** Label exibindo quantidade de episódios de hipoglicemia. */
     @FXML private Label hypoLabel;
 
+    /** Lista textual contendo os eventos recentes. */
     @FXML private ListView<String> eventsList;
 
+    /** Serviço responsável por carregar eventos do paciente. */
     private RoutineEventService eventService;
+
+    /** Serviço responsável por calcular estatísticas de glicose. */
     private GlucoseStatsService statsService;
 
+    /** Formatador de data para exibição amigável. */
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM HH:mm");
 
+    /**
+     * Construtor padrão do controller.
+     * Inicializa serviços necessários ao funcionamento do dashboard.
+     */
     public DashboardController() {
         try {
             this.eventService = new RoutineEventService(null);
@@ -41,11 +59,19 @@ public class DashboardController {
         }
     }
 
+    /**
+     * Método automaticamente chamado pelo JavaFX após a carga do FXML.
+     * Responsável por iniciar o carregamento dos dados do dashboard.
+     */
     @FXML
     private void initialize() {
         loadDashboard();
     }
 
+    /**
+     * Carrega todos os dados necessários para preencher o dashboard:
+     * gráfico, resumo estatístico e lista de eventos.
+     */
     private void loadDashboard() {
         Patient patient = SessionManager.getCurrentPatient();
 
@@ -58,6 +84,11 @@ public class DashboardController {
         updateList(events);
     }
 
+    /**
+     * Atualiza o gráfico de glicose exibindo os registros ordenados por data.
+     *
+     * @param events lista de eventos do paciente contendo medições de glicemia.
+     */
     private void updateChart(List<RoutineEvent> events) {
         glucoseChart.getData().clear();
 
@@ -75,6 +106,11 @@ public class DashboardController {
         glucoseChart.getData().add(series);
     }
 
+    /**
+     * Atualiza os indicadores numéricos do dashboard (média, HbA1c, hipo e hiper).
+     *
+     * @param events eventos utilizados para cálculo estatístico.
+     */
     private void updateSummary(List<RoutineEvent> events) {
         var summary = statsService.computeSummary(events);
 
@@ -84,6 +120,11 @@ public class DashboardController {
         hypoLabel.setText(String.valueOf(summary.getHypoCount()));
     }
 
+    /**
+     * Atualiza a lista textual de eventos exibida na interface.
+     *
+     * @param events lista de eventos recentes.
+     */
     private void updateList(List<RoutineEvent> events) {
         eventsList.getItems().clear();
 
@@ -110,11 +151,14 @@ public class DashboardController {
         }
     }
 
+    /**
+     * Abre o modal de criação de novo evento.
+     * Após o modal ser fechado, o dashboard é recarregado.
+     */
     @FXML
     private void onNewEvent() {
         NavigationManager.openModal("/com/project/view/new_event_dialog.fxml", "Novo Registro");
 
-        // Recarregar o dashboard após fechar o modal
         loadDashboard();
     }
 }

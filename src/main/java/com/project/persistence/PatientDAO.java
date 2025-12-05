@@ -6,12 +6,24 @@ import java.sql.*;
 import java.time.LocalDate;
 
 /**
- * DAO responsável por operações de persistência para Patient.
+ * DAO responsável pelas operações de persistência da entidade {@link Patient}.
+ *
+ * <p>Esta classe encapsula toda interação com a tabela <b>patient</b> do banco SQLite,
+ * fornecendo métodos de CRUD simplificados para uso nas camadas de serviço.</p>
+ *
+ * <p>Não possui dependência de UI e pode ser usada tanto no modo console
+ * quanto no JavaFX.</p>
  */
 public class PatientDAO {
 
+    /** Conexão JDBC ativa obtida via {@link DatabaseConnection}. */
     private final Connection conn;
 
+    /**
+     * Cria uma nova instância do DAO utilizando a conexão única do sistema.
+     *
+     * @throws SQLException se ocorrer erro ao obter a conexão
+     */
     public PatientDAO() throws SQLException {
         this.conn = DatabaseConnection.getInstance().getConnection();
     }
@@ -19,8 +31,18 @@ public class PatientDAO {
     // =======================================================
     // INSERT
     // =======================================================
-    public Patient insert(Patient p) {
 
+    /**
+     * Insere um novo paciente no banco de dados.
+     *
+     * <p>Após a inserção, o ID gerado automaticamente (AUTOINCREMENT)
+     * é atribuído ao objeto {@link Patient} fornecido.</p>
+     *
+     * @param p paciente a ser inserido
+     * @return o próprio paciente com o ID atualizado
+     * @throws RuntimeException se ocorrer erro de SQL
+     */
+    public Patient insert(Patient p) {
         String sql = """
             INSERT INTO patient
             (name, email, password, date_of_birth, gender, diabetes_type, diagnosis_date, carb_sensitivity)
@@ -42,6 +64,7 @@ public class PatientDAO {
 
             stmt.executeUpdate();
 
+            // Recupera o ID gerado automaticamente
             try (ResultSet rs = stmt.getGeneratedKeys()) {
                 if (rs.next()) {
                     p.setId(rs.getInt(1));
@@ -56,12 +79,23 @@ public class PatientDAO {
     }
 
     // =======================================================
-    // FIND BY EMAIL (usado para login)
+    // FIND BY EMAIL
     // =======================================================
+
+    /**
+     * Busca um paciente pelo email.
+     *
+     * <p>Método típico utilizado no fluxo de login.</p>
+     *
+     * @param email email a ser pesquisado
+     * @return o paciente correspondente ou {@code null} se não encontrado
+     * @throws RuntimeException se ocorrer erro de SQL
+     */
     public Patient findByEmail(String email) {
         String sql = "SELECT * FROM patient WHERE email = ?";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setString(1, email);
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -80,6 +114,14 @@ public class PatientDAO {
     // =======================================================
     // FIND BY ID
     // =======================================================
+
+    /**
+     * Busca um paciente pelo ID.
+     *
+     * @param id identificador do paciente
+     * @return o paciente correspondente ou {@code null} se não encontrado
+     * @throws RuntimeException se ocorrer erro de SQL
+     */
     public Patient findById(int id) {
         String sql = "SELECT * FROM patient WHERE id = ?";
 
@@ -103,8 +145,14 @@ public class PatientDAO {
     // =======================================================
     // UPDATE
     // =======================================================
-    public void update(Patient p) {
 
+    /**
+     * Atualiza os dados de um paciente existente.
+     *
+     * @param p paciente contendo os novos dados
+     * @throws RuntimeException se ocorrer erro de SQL
+     */
+    public void update(Patient p) {
         String sql = """
             UPDATE patient SET
                 name = ?,
@@ -138,8 +186,19 @@ public class PatientDAO {
     }
 
     // =======================================================
-    // MAPEAR RESULTSET → PATIENT
+    // MAP: RESULTSET → PATIENT
     // =======================================================
+
+    /**
+     * Constrói um objeto {@link Patient} a partir de um {@link ResultSet}.
+     *
+     * <p>Este método centraliza o mapeamento entre a tabela SQL e o modelo
+     * de domínio.</p>
+     *
+     * @param rs linha do banco contendo os dados do paciente
+     * @return instância preenchida de {@link Patient}
+     * @throws SQLException se ocorrer erro durante a leitura dos campos
+     */
     private Patient mapPatient(ResultSet rs) throws SQLException {
 
         int id = rs.getInt("id");
@@ -153,9 +212,10 @@ public class PatientDAO {
         String diagStr = rs.getString("diagnosis_date");
         LocalDate diag = (diagStr != null) ? LocalDate.parse(diagStr) : null;
 
-        Float sensitivity = rs.getObject("carb_sensitivity") != null
-                ? rs.getFloat("carb_sensitivity")
-                : null;
+        Float sensitivity =
+                (rs.getObject("carb_sensitivity") != null)
+                        ? rs.getFloat("carb_sensitivity")
+                        : null;
 
         return new Patient(
                 id,
