@@ -3,41 +3,85 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.*?>
+<?import javafx.scene.image.ImageView?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.project.controller.RegisterController"
-            prefWidth="450" prefHeight="620">
+            prefWidth="480" prefHeight="720"
+            styleClass="app-background">
 
     <center>
-        <VBox alignment="CENTER" spacing="12" prefWidth="350">
+        <VBox alignment="TOP_CENTER" spacing="24" prefWidth="360">
 
-            <Label text="Criar Conta"
-                   style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+            <!-- CARD -->
+            <VBox alignment="CENTER" spacing="16" styleClass="auth-card">
 
-            <TextField fx:id="nameField" promptText="Nome completo" prefWidth="270"/>
-            <TextField fx:id="emailField" promptText="Email" prefWidth="270"/>
+                <!-- LOGO -->
+                <ImageView fx:id="logoImage"
+                           fitHeight="95"
+                           preserveRatio="true"/>
 
-            <DatePicker fx:id="birthDatePicker" promptText="Data de nascimento"/>
+                <!-- TÍTULO -->
+                <Label text="Criar Conta"
+                       styleClass="auth-title"/>
 
-            <ComboBox fx:id="genderCombo" promptText="Gênero" prefWidth="270"/>
-            <ComboBox fx:id="diabetesTypeCombo" promptText="Tipo de diabetes" prefWidth="270"/>
+                <!-- CAMPOS -->
+                <VBox spacing="12" alignment="CENTER" prefWidth="300">
 
-            <DatePicker fx:id="diagnosisDatePicker" promptText="Data de diagnóstico"/>
+                    <TextField fx:id="nameField"
+                               promptText="Nome completo"
+                               styleClass="auth-input"/>
 
-            <PasswordField fx:id="passwordField" promptText="Senha" prefWidth="270"/>
+                    <TextField fx:id="emailField"
+                               promptText="Email"
+                               styleClass="auth-input"/>
 
-            <Button text="Cadastrar"
-                    prefWidth="220"
-                    style="-fx-background-color: #4CAF50; -fx-text-fill: white;"
-                    onAction="#onRegister"/>
+                    <HBox spacing="10" alignment="CENTER">
+                        <DatePicker fx:id="birthDatePicker"
+                                    promptText="Data de nascimento"
+                                    prefWidth="145"
+                                    styleClass="auth-input"/>
 
-            <Hyperlink text="Já tem conta? Entrar"
-                       onAction="#onGoToLogin"/>
+                        <ComboBox fx:id="genderCombo"
+                                  promptText="Gênero"
+                                  prefWidth="145"
+                                  styleClass="auth-input"/>
+                    </HBox>
 
-            <Label fx:id="errorLabel"
-                   textFill="red"
-                   style="-fx-font-size: 12px;"
-                   visible="false"/>
+                    <HBox spacing="10" alignment="CENTER">
+                        <ComboBox fx:id="diabetesTypeCombo"
+                                  promptText="Tipo de diabetes"
+                                  prefWidth="145"
+                                  styleClass="auth-input"/>
+
+                        <DatePicker fx:id="diagnosisDatePicker"
+                                    promptText="Data diagnóstico"
+                                    prefWidth="145"
+                                    styleClass="auth-input"/>
+                    </HBox>
+
+                    <PasswordField fx:id="passwordField"
+                                   promptText="Senha"
+                                   styleClass="auth-input"/>
+                </VBox>
+
+                <!-- BOTÃO -->
+                <Button text="Cadastrar"
+                        prefWidth="220"
+                        onAction="#onRegister"
+                        styleClass="auth-button"/>
+
+                <!-- LINK -->
+                <Hyperlink text="Já tem conta? Entrar"
+                           onAction="#onGoToLogin"
+                           styleClass="auth-link"/>
+
+                <!-- ERRO -->
+                <Label fx:id="errorLabel"
+                       textFill="red"
+                       visible="false"
+                       styleClass="auth-error"/>
+            </VBox>
         </VBox>
     </center>
 

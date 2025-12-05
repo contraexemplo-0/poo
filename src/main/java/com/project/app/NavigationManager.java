@@ -23,8 +23,15 @@ public class NavigationManager {
             FXMLLoader loader = new FXMLLoader(NavigationManager.class.getResource(fxmlPath));
             Parent root = loader.load();
             primaryStage.setTitle(title);
-            primaryStage.setScene(new Scene(root));
+
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(
+                    NavigationManager.class.getResource("/com/project/view/css/app.css").toExternalForm()
+            );
+
+            primaryStage.setScene(scene);
             primaryStage.show();
+
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Erro ao carregar tela: " + fxmlPath);

@@ -5,6 +5,9 @@ import com.project.model.Patient;
 import com.project.service.UserService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import java.util.Objects;
 
 import java.time.LocalDate;
 
@@ -21,6 +24,7 @@ public class RegisterController {
     @FXML private ComboBox<String> diabetesTypeCombo;
 
     @FXML private Label errorLabel;
+    @FXML private ImageView logoImage;
 
     private final UserService userService;
 
@@ -34,6 +38,16 @@ public class RegisterController {
 
     @FXML
     private void initialize() {
+
+        try {
+            logoImage.setImage(
+                    new Image(Objects.requireNonNull(
+                            getClass().getResourceAsStream("/com/project/view/img/logo.png")
+                    ))
+            );
+        } catch (Exception e) {
+            System.out.println("Erro ao carregar logo: " + e.getMessage());
+        }
         genderCombo.getItems().addAll("Masculino", "Feminino", "Outro");
         diabetesTypeCombo.getItems().addAll("Tipo 1", "Tipo 2", "LADA", "Gestacional");
     }

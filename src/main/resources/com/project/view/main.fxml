@@ -6,50 +6,46 @@
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.project.controller.MainController"
-            prefWidth="900" prefHeight="600">
+            prefWidth="1000" prefHeight="650"
+            styleClass="app-background">
 
-    <!-- ====================== MENU LATERAL ====================== -->
+    <!-- ============ SIDEBAR ============ -->
     <left>
-        <VBox spacing="20" prefWidth="180" alignment="TOP_CENTER"
-              style="-fx-background-color: #2C3E50; -fx-padding: 25;">
+        <VBox spacing="20"
+              alignment="TOP_CENTER"
+              styleClass="sidebar">
 
-            <Label text="Menu"
-                   style="-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold;"/>
+            <Label text="GLUO"
+                   styleClass="sidebar-title"/>
 
             <Button text="Evolução"
                     onAction="#showDashboard"
-                    prefWidth="140"
-                    style="-fx-background-color: #34495E; -fx-text-fill: white;"/>
+                    styleClass="nav-button"/>
 
             <Button text="Relatórios"
                     onAction="#showReports"
-                    prefWidth="140"
-                    style="-fx-background-color: #34495E; -fx-text-fill: white;"/>
+                    styleClass="nav-button"/>
 
             <Button text="Educação"
                     onAction="#showEducation"
-                    prefWidth="140"
-                    style="-fx-background-color: #34495E; -fx-text-fill: white;"/>
+                    styleClass="nav-button"/>
 
             <Button text="Mais"
                     onAction="#showMore"
-                    prefWidth="140"
-                    style="-fx-background-color: #34495E; -fx-text-fill: white;"/>
+                    styleClass="nav-button"/>
 
-            <Separator prefWidth="130"/>
+            <Region VBox.vgrow="ALWAYS"/>
 
             <Button text="Sair"
                     onAction="#logout"
-                    prefWidth="140"
-                    style="-fx-background-color: #E74C3C; -fx-text-fill: white;"/>
+                    styleClass="logout-button"/>
         </VBox>
     </left>
 
-    <!-- ====================== ÁREA DE CONTEÚDO ====================== -->
+    <!-- ============ ÁREA DE CONTEÚDO ============ -->
     <center>
         <StackPane fx:id="contentArea"
-                   style="-fx-background-color: #ECF0F1;"
-                   prefWidth="700" prefHeight="600"/>
+                   styleClass="content-area"/>
     </center>
 
 </BorderPane>

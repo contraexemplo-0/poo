@@ -1,0 +1,235 @@
+/* ======== CORES ======== */
+:root {
+    /* Paleta oficial */
+    base-color: #1A8AA5;
+    accent-color: #45C4B0;
+    light-bg: #F4F7F7;
+    text-dark: #2A2A2A;
+    card-shadow: rgba(0,0,0,0.10);
+}
+
+/* ======== FUNDO DA TELA ======== */
+.app-background {
+    -fx-background-color: #F4F7F7;
+}
+
+/* ======== CARD ======== */
+.auth-card {
+    -fx-background-color: white;
+    -fx-padding: 32 32 32 32;
+    -fx-background-radius: 18;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 18, 0.15, 0, 4);
+    -fx-alignment: top-center;
+}
+
+/* ======== TÍTULO PRINCIPAL ======== */
+.auth-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2A2A2A;
+}
+
+/* ======== CAMPOS DE INPUT ======== */
+.auth-input {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-color: #DDE3E4;
+    -fx-border-radius: 10;
+    -fx-padding: 10;
+    -fx-pref-height: 40;
+    -fx-font-size: 14px;
+}
+
+.auth-input:focused {
+    -fx-border-color: #1A8AA5;
+    -fx-border-width: 1.5;
+}
+
+/* DatePicker adjustments */
+.date-picker .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.date-picker .text-field {
+    -fx-background-color: transparent;
+}
+
+/* ======== BOTÃO DE CADASTRAR ======== */
+.auth-button {
+    -fx-background-color: #1A8AA5;
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-padding: 10 0 10 0;
+    -fx-cursor: hand;
+}
+
+.auth-button:hover {
+    -fx-background-color: #157A91;
+}
+
+/* ======== LINK PARA LOGIN ======== */
+.auth-link {
+    -fx-text-fill: #1A8AA5;
+    -fx-font-size: 13px;
+}
+
+.auth-link:hover {
+    -fx-text-fill: #157A91;
+}
+
+/* ======== ERRO ======== */
+.auth-error {
+    -fx-font-size: 12px;
+    -fx-text-fill: red;
+}
+
+/* ========================= */
+/*        SIDEBAR            */
+/* ========================= */
+
+.sidebar {
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 28 20;
+    -fx-pref-width: 200;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 12, 0.15, 0, 3);
+}
+
+.sidebar-title {
+    -fx-text-fill: #1A8AA5;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #2A2A2A;
+    -fx-font-size: 16px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 12 16;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.nav-button:hover {
+    -fx-background-color: #E8F5F7;
+}
+
+.nav-button:selected,
+.nav-button:focused {
+    -fx-background-color: #C6EEF4;
+}
+
+/* BOTÃO DE SAIR */
+.logout-button {
+    -fx-background-color: #E74C3C;
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-background-radius: 8;
+    -fx-padding: 10;
+}
+
+/* ========================= */
+/*     ÁREA DO CONTEÚDO      */
+/* ========================= */
+
+.content-area {
+    -fx-background-color: #F4F7F7;
+    -fx-padding: 32;
+}
+
+/* ========================= */
+/*         CARDS             */
+/* ========================= */
+
+.card {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-background-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 15, 0.15, 0, 4);
+}
+
+.card-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2A2A2A;
+}
+
+.metric-card {
+    -fx-background-color: white;
+    -fx-padding: 18;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0.10, 0, 3);
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* ======== TÍTULOS DO DASHBOARD ======== */
+.dashboard-title {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2A2A2A;
+}
+
+.dashboard-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #6B6B6B;
+}
+
+/* ======== BOTÃO NOVO REGISTRO ======== */
+.add-button {
+    -fx-background-color: #1A8AA5;
+    -fx-text-fill: white;
+    -fx-padding: 10 18;
+    -fx-background-radius: 12;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+.add-button:hover {
+    -fx-background-color: #157A91;
+}
+
+/* ======== CARD PRINCIPAL GRÁFICO ======== */
+.graph-card {
+    -fx-background-color: white;
+    -fx-background-radius: 18;
+    -fx-padding: 25;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 14, 0.12, 0, 3);
+}
+
+/* ======== METRIC CARDS ======== */
+.metric-box {
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+    -fx-padding: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0.10, 0, 3);
+}
+
+.metric-value {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.metric-label {
+    -fx-text-fill: #6B6B6B;
+    -fx-font-size: 13px;
+}
+
+/* ======== LISTA DE EVENTOS ======== */
+.event-box {
+    -fx-background-color: white;
+    -fx-padding: 15;
+    -fx-background-radius: 14;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0.10, 0, 3);
+}
+
+.event-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.event-sub {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6B6B6B;
+}
+

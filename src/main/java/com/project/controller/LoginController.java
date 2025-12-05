@@ -6,6 +6,8 @@ import com.project.model.Patient;
 import com.project.service.UserService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class LoginController {
 
@@ -56,4 +58,17 @@ public class LoginController {
         errorLabel.setText(msg);
         errorLabel.setVisible(true);
     }
+
+    @FXML private ImageView logoImage;
+
+    public void initialize() {
+        try {
+            logoImage.setImage(new Image(
+                    getClass().getResource("/com/project/view/img/logo.png").toExternalForm()
+            ));
+        } catch (Exception e) {
+            System.out.println("Erro ao carregar logo: " + e.getMessage());
+        }
+    }
+
 }
