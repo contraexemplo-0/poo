@@ -1,82 +1,93 @@
-Sistema de Gerenciamento de Diabetes
-Projeto de Programação Orientada a Objetos – Java + JavaFX + SQLite
+# Sistema de Gerenciamento de Diabetes
 
-Autores: Equipe do projeto
-Ano: 2025
+Projeto desenvolvido para a disciplina de **Programação Orientada a Objetos**, utilizando **Java, JavaFX e SQLite**.
 
-📌 Sobre o Projeto
+## Sobre o Projeto
 
-Este sistema foi desenvolvido como trabalho da disciplina Programação Orientada a Objetos, com o objetivo de construir uma aplicação desktop funcional para auxiliar pacientes diabéticos no acompanhamento diário da glicemia e de sua alimentação.
+O Sistema de Gerenciamento de Diabetes é uma aplicação desktop desenvolvida com o objetivo de auxiliar pacientes diabéticos no acompanhamento diário da glicemia, alimentação e outros eventos relacionados à rotina de tratamento.
 
-A aplicação segue os princípios de POO, MVC, DAO, e utiliza JavaFX como interface gráfica, além de integração com SQLite para persistência dos dados.
+O projeto aplica conceitos de **Programação Orientada a Objetos**, arquitetura **MVC**, padrão **DAO** e camada de serviços. A interface gráfica foi desenvolvida com **JavaFX**, enquanto a persistência dos dados é realizada localmente utilizando **SQLite**.
 
-🎯 Funcionalidades Implementadas
-🔐 Autenticação
+## Funcionalidades
 
-Cadastro de novo paciente
+### Autenticação
 
-Login utilizando e-mail e senha
+- Cadastro de pacientes
+- Login utilizando e-mail e senha
+- Gerenciamento de sessão do usuário
 
-Gerenciamento de sessão
+### Dashboard
 
-🏠 Dashboard (Visão Geral)
+A tela principal apresenta uma visão geral dos registros do paciente, incluindo:
 
-Gráfico de glicemia dos últimos dias
+- Gráfico com os valores de glicemia dos últimos dias
+- Média glicêmica
+- Estimativa de HbA1c
+- Quantidade de episódios de hipoglicemia
+- Quantidade de episódios de hiperglicemia
+- Lista de eventos recentes
 
-Estatísticas automáticas:
+### Registro de Eventos
 
-Média glicêmica
+O sistema utiliza uma estrutura unificada de eventos por meio da classe `RoutineEvent`.
 
-Estimativa de HbA1c
+É possível registrar:
 
-Contagem de hipoglicemias e hiperglicemias
+- Glicemia
+  - Valor
+  - Categoria
+  - Data e hora
 
-Lista de eventos recentes
+- Refeição
+  - Descrição
+  - Quantidade de carboidratos
+  - Índice glicêmico
+  - Categoria
+  - Data e hora
 
-📝 Registro de Eventos
+- Registro combinado de refeição e glicemia
 
-Sistema unificado de registro (RoutineEvent):
+O cadastro dos eventos é realizado por meio de uma janela modal.
 
-Glicemia: valor, categoria e data/hora
+### Relatórios
 
-Refeição: descrição, carboidratos, índice glicêmico, categoria, data/hora
+O sistema permite visualizar relatórios referentes aos períodos de:
 
-Registro combinado refeição + glicemia
+- 7 dias
+- 30 dias
+- 90 dias
 
-Interface em modal para facilitar o cadastro
+Os relatórios apresentam:
 
-📊 Relatórios
+- Média glicêmica
+- Valor mínimo
+- Valor máximo
+- Número de episódios de hipoglicemia
+- Número de episódios de hiperglicemia
+- Lista dos eventos registrados no período selecionado
 
-Relatórios de 7, 30 e 90 dias contendo:
+### Educação
 
-Média, mínimo, máximo
+A aplicação possui uma área destinada a informações relacionadas ao diabetes, contendo conteúdos sobre:
 
-Número de hipos/hipers
+- Sintomas de hipoglicemia
+- Sintomas de hiperglicemia
+- Cuidados gerais
+- Boas práticas para pacientes diabéticos
 
-Lista completa dos eventos filtrados
+### Configurações
 
-🎓 Educação
+A seção de configurações permite visualizar:
 
-Uma aba dedicada a informações úteis sobre:
+- Informações do paciente autenticado
+- Sensibilidade a carboidratos
+- Opção de logout
 
-Sintomas de hipo e hiper
+## Arquitetura
 
-Cuidados gerais
+O projeto está organizado em diferentes camadas, separando responsabilidades entre aplicação, controladores, modelos, persistência e serviços.
 
-Boas práticas para pacientes diabéticos
-
-⚙️ Configurações ("Mais")
-
-Informações do paciente logado
-
-Sensibilidade a carboidratos (futuramente ajustável)
-
-Logout
-
-🧱 Arquitetura
-
-O sistema segue uma estrutura modular e organizada:
-
+```text
 src/main/java/com/project/
 │
 ├── app/
@@ -108,124 +119,135 @@ src/main/java/com/project/
     ├── UserService.java
     ├── RoutineEventService.java
     └── GlucoseStatsService.java
+```
 
-🗄️ Banco de Dados
+### Organização das camadas
 
-O banco utiliza SQLite e é criado automaticamente no primeiro uso.
-Principais tabelas:
+- `app`: inicialização da aplicação, navegação e gerenciamento de sessão
+- `controller`: controle das telas e interação com a interface gráfica
+- `model`: entidades e estruturas de domínio
+- `persistence`: acesso e persistência dos dados
+- `service`: regras de negócio e processamento das informações
 
-patient
+## Banco de Dados
 
-id, nome, email, senha
+O sistema utiliza **SQLite** como banco de dados local.
 
-data de nascimento
+O banco é criado automaticamente durante a primeira execução da aplicação.
 
-tipo de diabetes
+### Tabela `patient`
 
-gênero
+Armazena informações dos pacientes, como:
 
-data de diagnóstico
+- ID
+- Nome
+- E-mail
+- Senha
+- Data de nascimento
+- Tipo de diabetes
+- Gênero
+- Data de diagnóstico
+- Sensibilidade padrão
 
-sensibilidade padrão
+### Tabela `routine_event`
 
-routine_event
+Armazena os eventos registrados pelo paciente.
 
-Registro unificado de:
+Um evento pode representar:
 
-glicemia
+- Uma medição de glicemia
+- Uma refeição
+- Uma combinação entre refeição e glicemia
 
-refeição
+## Tecnologias Utilizadas
 
-ou ambos
+- Java 21
+- JavaFX
+- SQLite
+- Xerial SQLite JDBC
+- Maven
+- MVC
+- DAO
+- Javadoc
 
-💻 Tecnologias Utilizadas
+## Como Executar
 
-Java 21
+### Pré-requisitos
 
-JavaFX
+Certifique-se de possuir instalado:
 
-SQLite (Xerial JDBC)
+- Java 21 ou superior
+- Maven 3.8 ou superior
 
-Maven
+### Executando o Projeto
 
-Arquitetura MVC + DAO
+Compile o projeto utilizando:
 
-Javadoc para documentação de código
+```bash
+mvn clean compile
+```
 
-🚀 Como Executar
-1. Instalar Dependências
+Caso o projeto esteja configurado com o plugin JavaFX, execute:
 
-Certifique-se de ter:
-
-Java 21+
-
-Maven 3.8+
-
-JavaFX configurado no seu ambiente
-
-2. Rodar o Projeto
-
-Via Maven plugin:
-
-mvn clean compile exec:java
-
-
-ou configurando o Main:
-
+```bash
 mvn javafx:run
+```
 
-3. Banco de Dados
+Dependendo da configuração do `pom.xml`, também pode ser utilizada a execução por meio do Maven:
 
-O arquivo database.db será criado automaticamente na pasta raiz ao iniciar o sistema.
+```bash
+mvn clean compile exec:java
+```
 
-📚 Documentação
+## Banco de Dados
 
-O projeto possui Javadoc completo para:
+O arquivo:
 
-Controllers
+```text
+database.db
+```
 
-Services
+é criado automaticamente na pasta raiz do projeto durante a execução da aplicação.
 
-Models
+## Documentação
 
-DAO
+O código possui documentação Javadoc para os principais componentes da aplicação, incluindo:
 
-Módulos principais da aplicação
+- Controllers
+- Services
+- Models
+- DAOs
+- Componentes principais
 
-Para gerar a documentação:
+Para gerar a documentação, execute:
 
+```bash
 mvn javadoc:javadoc
+```
 
+A documentação será gerada em:
 
-Os arquivos serão gerados em:
-
+```text
 target/site/javadoc/
+```
 
-🧪 Futuras Melhorias
+## Possíveis Melhorias Futuras
 
-Ajuste de sensibilidade a carboidratos pelo usuário
+Entre possíveis evoluções do projeto estão:
 
-Geração de relatórios em PDF
+- Configuração da sensibilidade a carboidratos pelo próprio usuário
+- Geração de relatórios em PDF
+- Predição de glicemia pós-prandial
+- Notificações relacionadas a padrões glicêmicos
+- Suporte a temas claro e escuro
+- Integração com dispositivos externos de monitoramento
 
-Predição de glicemia pós-prandial (modelo de IA no backend)
+## Diagrama de Classes
 
-Notificações inteligentes sobre padrões glicêmicos
+O diagrama de classes do projeto está disponível em:
 
-Temas claro/escuro para a interface
-
-Sincronização com dispositivos externos
-
-👥 Autores
-
-Trabalho desenvolvido para fins acadêmicos por:
-
-Nome da equipe
-
-Turma / Universidade
-
-📄 Licença
-
-Projeto acadêmico — uso livre para fins educacionais.
-
-Diagrama de Classes:
 https://imgur.com/a/kqFUMJn
+
+## Licença
+
+Projeto desenvolvido para fins acadêmicos e educacionais.
